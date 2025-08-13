@@ -1,35 +1,30 @@
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-export default function LoginForm() {
+export default function RegisterForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
         setError("");
-        setLoading(true);
 
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            navigate("/home");  // <-- Redirige tras login exitoso
+            await createUserWithEmailAndPassword(auth, email, password);
+            alert("✅ Usuario registrado");
         } catch (err) {
-            setError("❌ Usuario o contraseña incorrectos");
-        } finally {
-            setLoading(false);
+            setError("❌ Error al registrar usuario");
         }
     };
 
     return (
         <div className="login-container">
             <div className="login-card">
-                <h2>Login</h2>
-                <form onSubmit={handleSubmit}>
+                <h2>Registro</h2>
+                <form onSubmit={handleRegister}>
                     <input
                         type="email"
                         placeholder="Email"
@@ -45,13 +40,11 @@ export default function LoginForm() {
                         required
                     />
                     {error && <p style={{ color: "red" }}>{error}</p>}
-                    <button type="submit" disabled={loading}>
-                        {loading ? "Ingresando..." : "Ingresar"}
-                    </button>
+                    <button type="submit">Registrarse</button>
                 </form>
                 <p style={{ marginTop: "1rem", textAlign: "center" }}>
-                    ¿No tienes cuenta?{" "}
-                    <Link to="/register" style={{ color: "#4f46e5" }}>Regístrate aquí</Link>
+                    ¿Ya tienes cuenta?{" "}
+                    <Link to="/login" style={{ color: "#4f46e5" }}>Inicia sesión aquí</Link>
                 </p>
             </div>
         </div>
